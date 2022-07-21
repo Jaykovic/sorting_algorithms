@@ -1,88 +1,68 @@
 #include "sort.h"
 
 /**
- * _swap - swaps two values in an array
- *
- * @array: data to sort
- * @i: first value
- * @j: second value
- *
- * Return: No Return
+ * partition_h - array partition
+ * @array: array to sort
+ * @first: first position
+ * @last: last position
+ * @size: array size
+ * Return: int pivot index
  */
-void _swap(int *array, int i, int j)
+int partition_h(int *array, int first, int last, size_t size)
 {
-	int tmp;
+	int pivot = array[last], i = first - 1, j = last + 1, aux;
 
-	tmp = array[i];
-	array[i] = array[j];
-	array[j] = tmp;
-}
-
-/**
- * partition - sorts a partition of data in relation to a pivot
- *
- * @array: data to sort
- * @min: Left wall
- * @max: right wall
- * @size: size of data
- *
- * Return: New Pivot
- */
-int partition(int *array, int min, int max, size_t size)
-{
-	int i, j, pivot = array[max];
-
-	for (i = min, j = max; 1; i++, j--)
+	while (1)
 	{
-		while (array[i] < pivot)
+		do {
 			i++;
+		} while (array[i] < pivot);
 
-		while (array[j] > pivot)
+		do {
 			j--;
+		} while (array[j] > pivot);
 
-		if (i >= j)
-			return (i);
-		_swap(array, i, j);
-		print_array(array, size);
+		if (j < i)
+			return (j);
+		if (array[i] > array[j])
+		{
+			aux = array[i];
+			array[i] = array[j];
+			array[j] = aux;
+			print_array(array, size);
+		}
 	}
 }
 
 /**
- * quicksort -  sorts an array of integers in ascending order using the
- * Quick sort algorithm Lomuto partition scheme
- *
- * @array: data to sort
- * @min: Left wall
- * @max: right wall
- * @size: size of data
- *
- * Return: No Return
+ * qsh - sorts an array of integers recursively
+ * @array: array to sort
+ * @first: first position
+ * @last: last position
+ * @size: array size
  */
-void quicksort(int *array, int min, int max, size_t size)
+void qsh(int *array, int first, int last, size_t size)
 {
-	int p;
+	int pivot;
 
-	if (min < max)
+	if (first < last)
 	{
-		p = partition(array, min, max, size);
-		quicksort(array, min, p - 1, size);
-		quicksort(array, p, max, size);
+		pivot = partition_h(array, first, last, size);
+		qsh(array, first, pivot, size);
+		qsh(array, pivot + 1, last, size);
 	}
 }
 
 /**
- * quick_sort_hoare -  sorts an array of integers in ascending order using the
- * Quick sort algorithm Hoare partition scheme
- *
- * @array: data to sort
- * @size: size of data
- *
- * Return: No Return
+ * quick_sort_hoare - sorts an array of integers using the Quick
+ * sort hoare algorithm  in ascending order
+ * @array: array to sort
+ * @size: array size
  */
 void quick_sort_hoare(int *array, size_t size)
 {
 	if (!array || size < 2)
 		return;
 
-	quicksort(array, 0, size - 1, size);
+	qsh(array, 0, size - 1, size);
 }
